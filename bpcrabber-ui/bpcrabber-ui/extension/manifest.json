@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "BeatportDL Downloader",
+  "version": "0.1.0",
+  "description": "Send Beatport tracks/releases to your BeatportDL backend for downloading.",
+  "permissions": [
+    "scripting",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://www.beatport.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.beatport.com/*"],
+      "js": ["content.js"]
+    }
+  ],
+  "options_page": "options.html"
+} 

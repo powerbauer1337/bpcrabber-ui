@@ -1,0 +1,1 @@
+console.log('BeatportDL background service worker running.'); 

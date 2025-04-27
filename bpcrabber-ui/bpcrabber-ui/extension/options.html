@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>BeatportDL Extension Options</title>
+  <style>
+    body { font-family: sans-serif; margin: 2em; }
+    label { display: block; margin-bottom: 0.5em; }
+    input[type=text] { width: 350px; padding: 0.5em; }
+    button { margin-top: 1em; padding: 0.5em 1em; }
+    #status { margin-top: 1em; color: green; }
+  </style>
+</head>
+<body>
+  <h2>BeatportDL Extension Settings</h2>
+  <label for="backendUrl">Backend URL:</label>
+  <input type="text" id="backendUrl" placeholder="http://localhost:8080">
+  <br>
+  <button id="saveBtn">Save</button>
+  <div id="status"></div>
+  <script src="options.js"></script>
+</body>
+</html> 

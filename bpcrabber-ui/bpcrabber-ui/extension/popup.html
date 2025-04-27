@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>BeatportDL Downloader</title>
+  <style>
+    body { font-family: sans-serif; min-width: 250px; padding: 10px; }
+    input[type=url] { width: 100%; margin-bottom: 8px; }
+    button { width: 100%; }
+    #status { margin-top: 10px; font-size: 0.9em; color: #555; }
+  </style>
+</head>
+<body>
+  <h3>Send to BeatportDL</h3>
+  <input type="url" id="url" placeholder="Paste Beatport URL here" required />
+  <button id="send">Send to Downloader</button>
+  <div id="status"></div>
+  <div id="downloads" style="margin-top:16px;"></div>
+  <script src="popup.js"></script>
+</body>
+</html> 
