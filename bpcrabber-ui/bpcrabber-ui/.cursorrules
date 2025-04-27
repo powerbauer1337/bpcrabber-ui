@@ -130,9 +130,40 @@ If needed, you can further use the `web_scraper.py` file to scrape the web page 
 [X] Show download status inline on the Beatport page
 
 # [2025-05-01] Backend Persistence
-[ ] Add JSON file-based persistence for downloads and config (downloads.json, config.json)
-[ ] Refactor handlers to load/save state on startup and after changes
-[ ] Handle file I/O errors gracefully
+[X] Add JSON file-based persistence for downloads and config (downloads.json, config.json)
+[X] Refactor handlers to load/save state on startup and after changes
+[X] Handle file I/O errors gracefully
+
+# [2025-05-02] Browser Extension MVP
+[X] Inject UI into beatport.com for one-click sending
+[X] Show download status in the popup
+[X] Make backend URL configurable (options page)
+[X] Batch download selection and status inline
+
+# [2025-05-03] Web Dashboard MVP
+[X] Scaffold Vite + React + TypeScript app in ui/
+[X] Download queue/status table (live from /downloads)
+[X] Config form (view/update /config)
+[X] Manual URL input form (POST to /download)
+[X] End-to-end test: extension → backend → dashboard
+
+# Current State (2025-05-03)
+- Backend: REST API, persistent, stable
+- Extension: Feature-complete for MVP, configurable, works with backend
+- Dashboard: Fully functional (queue, config, manual download)
+- All code committed and pushed to GitHub
+
+# Next Steps (future)
+- [ ] Polish UI/UX (dashboard and extension)
+- [ ] Add notifications, error logs, or advanced features
+- [ ] (Optional) Serve dashboard static build from Go backend
+- [ ] (Optional) Add authentication or user management
+
+# Lessons
+- Use Vite + React (TypeScript) for fast, modern dashboard integration
+- Always check for submodules when saving progress in a monorepo
+- Use Chrome storage for extension config to maximize flexibility
+- Commit and push from project root for top-level changes; handle submodules separately
 
 # BeatportDL UI/Browser Extension Integration Plan
 

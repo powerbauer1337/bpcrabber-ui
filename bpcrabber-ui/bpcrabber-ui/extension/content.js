@@ -25,7 +25,8 @@ console.log('BeatportDL content script loaded.');
     if (!titleEl) return;
     const btn = document.createElement('button');
     btn.id = 'bpdl-send-btn';
-    btn.textContent = 'Send to BeatportDL';
+    btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" style="vertical-align:middle;margin-right:6px;"><path d="M10 2v10m0 0l-4-4m4 4l4-4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="4" y="16" width="12" height="2" rx="1" fill="#fff"/></svg>Send to BeatportDL';
+    btn.title = 'Send this release/track to BeatportDL backend';
     btn.style.marginLeft = '12px';
     btn.style.padding = '6px 12px';
     btn.style.background = '#1db954';
@@ -43,7 +44,7 @@ console.log('BeatportDL content script loaded.');
           const resp = await fetch(backendUrl + '/download', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ url: window.location.href })
+            body: JSON.stringify({ urls: [window.location.href] })
           });
           if (resp.ok) {
             btn.textContent = 'Sent!';
@@ -74,7 +75,11 @@ console.log('BeatportDL content script loaded.');
             const data = await resp.json();
             const downloads = Array.isArray(data.downloads) ? data.downloads : data;
             downloads.forEach(d => {
-              if (d.url) downloadStatusMap[d.url] = d.status;
+              if (d.request && Array.isArray(d.request.urls)) {
+                d.request.urls.forEach(url => {
+                  downloadStatusMap[url] = d.status;
+                });
+              }
             });
           }
         } catch (e) {
@@ -103,6 +108,7 @@ console.log('BeatportDL content script loaded.');
           checkbox.type = 'checkbox';
           checkbox.className = 'bpdl-checkbox';
           checkbox.style.marginRight = '8px';
+          checkbox.title = 'Select this track for download';
           // Insert checkbox at the start of the row
           if (row.firstElementChild) {
             row.insertBefore(checkbox, row.firstElementChild);
@@ -159,6 +165,7 @@ console.log('BeatportDL content script loaded.');
         const btn = document.createElement('button');
         btn.id = 'bpdl-download-selected';
         btn.textContent = 'Download Selected';
+        btn.title = 'Send all selected tracks to BeatportDL backend';
         btn.style.margin = '8px 0';
         btn.style.padding = '6px 12px';
         btn.style.background = '#1db954';
@@ -170,27 +177,37 @@ console.log('BeatportDL content script loaded.');
         btn.addEventListener('click', async () => {
           btn.disabled = true;
           const origText = btn.textContent;
-          btn.textContent = 'Sending...';
+          btn.innerHTML = '<span class="bpdl-spinner" style="display:inline-block;width:16px;height:16px;vertical-align:middle;margin-right:6px;border:2px solid #fff;border-top:2px solid #1db954;border-radius:50%;animation:bpdlspin 0.7s linear infinite;"></span>Sending...';
           const checkboxes = table.querySelectorAll('.bpdl-checkbox:checked');
-          let sent = 0, failed = 0;
           getBackendUrl(async (backendUrl) => {
+            const urls = [];
             for (const cb of checkboxes) {
               const row = cb.closest('tr, .bucket-item, .track');
               const link = row && row.querySelector('a[href*="/track/"]');
-              if (!link) continue;
-              try {
-                const resp = await fetch(backendUrl + '/download', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ url: link.href })
-                });
-                if (resp.ok) sent++;
-                else failed++;
-              } catch (e) {
-                failed++;
-              }
+              if (link) urls.push(link.href);
             }
-            btn.textContent = `Done (${sent} sent, ${failed} failed)`;
+            if (urls.length === 0) {
+              btn.textContent = 'No tracks selected';
+              setTimeout(() => {
+                btn.textContent = origText;
+                btn.disabled = false;
+              }, 1500);
+              return;
+            }
+            try {
+              const resp = await fetch(backendUrl + '/download', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ urls })
+              });
+              if (resp.ok) {
+                btn.textContent = `Done (${urls.length} sent)`;
+              } else {
+                btn.textContent = 'Error sending batch';
+              }
+            } catch (e) {
+              btn.textContent = 'Network error';
+            }
             setTimeout(() => {
               btn.textContent = origText;
               btn.disabled = false;
@@ -221,4 +238,12 @@ console.log('BeatportDL content script loaded.');
     runAll();
   });
   observer.observe(document.body, { childList: true, subtree: true });
+
+  // At the end of the file, add the spinner animation CSS if not present:
+  if (!document.getElementById('bpdl-spinner-style')) {
+    const style = document.createElement('style');
+    style.id = 'bpdl-spinner-style';
+    style.textContent = `@keyframes bpdlspin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`;
+    document.head.appendChild(style);
+  }
 })(); 

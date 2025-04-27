@@ -43,7 +43,7 @@ document.getElementById('send').addEventListener('click', () => {
       const resp = await fetch(backendUrl + '/download', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url })
+        body: JSON.stringify({ urls: [url] })
       });
       if (resp.ok) {
         statusDiv.textContent = 'Sent! Check dashboard for status.';

@@ -1,6 +1,28 @@
 import React from 'react';
 import './App.css';
 
+function StatusBadge({ status }: { status: string }) {
+  let color = '#888';
+  if (status === 'queued') color = '#f0ad4e';
+  else if (status === 'downloading') color = '#0275d8';
+  else if (status === 'completed') color = '#5cb85c';
+  else if (status === 'error') color = '#d9534f';
+  return (
+    <span style={{
+      display: 'inline-block',
+      minWidth: 80,
+      padding: '0.2em 0.7em',
+      borderRadius: 12,
+      background: color,
+      color: '#fff',
+      fontWeight: 600,
+      fontSize: '0.95em',
+      textAlign: 'center',
+      letterSpacing: 1
+    }}>{status}</span>
+  );
+}
+
 function DownloadQueue() {
   const [downloads, setDownloads] = React.useState<any[]>([]);
   const [loading, setLoading] = React.useState(true);
@@ -32,7 +54,7 @@ function DownloadQueue() {
       <h2>Download Queue</h2>
       {loading ? <p>Loading...</p> : error ? <p style={{color:'red'}}>Error: {error}</p> : (
         downloads.length === 0 ? <p>No downloads yet.</p> :
-        <table style={{width:'100%', borderCollapse:'collapse'}}>
+        <table style={{width:'100%', borderCollapse:'collapse', boxShadow:'0 2px 8px #0001', background:'#fff', borderRadius:8, overflow:'hidden'}}>
           <thead>
             <tr>
               <th>ID</th>
@@ -43,9 +65,9 @@ function DownloadQueue() {
           </thead>
           <tbody>
             {downloads.map((d: any) => (
-              <tr key={d.id}>
+              <tr key={d.id} className="download-row" style={{background:'#f9f9f9', transition:'background 0.2s'}}>
                 <td>{d.id}</td>
-                <td>{d.status}</td>
+                <td><StatusBadge status={d.status} /></td>
                 <td>{d.request?.type || ''}</td>
                 <td>{Array.isArray(d.request?.urls) ? d.request.urls.join(', ') : ''}</td>
               </tr>
