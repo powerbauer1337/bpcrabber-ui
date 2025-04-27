@@ -106,6 +106,29 @@ If needed, you can further use the `web_scraper.py` file to scrape the web page 
 - Use 'gpt-4o' as the model name for OpenAI's GPT-4 with vision capabilities
 - When searching for recent news, use the current year (2025) instead of previous years, or simply use the "recent" keyword to get the latest information
 
+## MCP Server Integration (2025-05-03)
+- Integrated the following MCP servers into Cursor configuration:
+  - **mcp-compass**: Model Context Protocol discovery and recommendation.
+    - *Tools/Functions*: Discover available MCP servers and models, recommend best-fit tools for a task.
+    - *Example*: List all available LLMs or automation tools before running a workflow.
+  - **mcp-memory**: Knowledge graph memory for storing and recalling information.
+    - *Tools/Functions*: Store facts, retrieve context, answer questions based on persistent memory.
+    - *Example*: Save user preferences, project state, or task history for later retrieval.
+  - **mcp-github**: GitHub code, issues, and repo integration.
+    - *Tools/Functions*: Search code, fetch issues, automate repo management, analyze PRs.
+    - *Example*: Automate code review, fetch open issues, or search for code snippets in a repo.
+  - **mcp-sequentialthinking**: Stepwise/plan-based reasoning and task decomposition.
+    - *Tools/Functions*: Decompose complex problems into actionable steps, generate and execute plans.
+    - *Example*: Plan a multi-step deployment, generate a checklist for a coding task.
+  - **mcp-puppeteer**: Web automation and browser control.
+    - *Tools/Functions*: Automate browser actions, scrape web content, interact with web pages programmatically.
+    - *Example*: Automatically log into a site, scrape data, or verify UI changes.
+  - **godoc-mcp**: Go documentation and API exploration.
+    - *Tools/Functions*: Search and retrieve Go package documentation, API signatures, and usage examples.
+    - *Example*: Quickly look up Go API docs or function signatures without reading the full source code.
+- All servers are now available for use in Cursor workflows. Restart Cursor after installation to activate.
+- Example usage: Use sequential thinking for complex planning, memory for persistent knowledge, puppeteer for web automation, GitHub for codebase queries, and godoc-mcp for Go code understanding.
+
 # Scratchpad
 
 [Development started: 2024-06-11]
@@ -216,3 +239,17 @@ If needed, you can further use the `web_scraper.py` file to scrape the web page 
 - [ ] Write a comprehensive README and usage guide.
 
 # End of Plan
+
+# [2025-06-11] BeatportDL Successful Login & Download
+[X] Built BeatportDL for linux-amd64
+[X] Verified User-Agent workaround is present in code (matches browser)
+[X] Successfully logged in and started download (Strobe - Original Mix, FLAC)
+[X] Committed progress locally
+[ ] Pushed to GitHub fork (encountered remote mismatch, resolved by setting remote to powerbauer1337/bpcrabber-ui)
+[ ] Need to pull/merge before push due to remote being ahead
+
+# Lessons
+- BeatportDL already implements a modern User-Agent; manual patching is not needed unless Beatport changes again.
+- 403 errors can be caused by temporary server-side blocks, subscription issues, or API changes, not just credentials.
+- When pushing to a fork, always ensure your local branch is up to date with the remote to avoid non-fast-forward errors.
+- If push is rejected, run 'git pull origin main' and resolve any merge conflicts before pushing again.
