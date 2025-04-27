@@ -1,0 +1,1 @@
+[Cursor] Extension & UI polish: batch download, status mapping, spinner, tooltips, icon.\n\n- Extension: batch download sends all URLs in one request, robust status mapping, spinner on Download Selected, tooltips, SVG icon on Send button.\n- UI: status badges, table polish.\n- Popup: always sends {urls: [url]}.\n- .cursorrules: progress and lessons updated.

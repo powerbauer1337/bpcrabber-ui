@@ -1,6 +1,23 @@
 import React from 'react';
 import './App.css';
 
+// Define types for download and config
+interface DownloadRequest {
+  type: string;
+  urls: string[];
+}
+interface DownloadItem {
+  id: string;
+  status: string;
+  request?: DownloadRequest;
+}
+interface Config {
+  username?: string;
+  quality?: string;
+  download_dir?: string;
+  [key: string]: string | undefined;
+}
+
 function StatusBadge({ status }: { status: string }) {
   let color = '#888';
   if (status === 'queued') color = '#f0ad4e';
@@ -24,7 +41,7 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 function DownloadQueue() {
-  const [downloads, setDownloads] = React.useState<any[]>([]);
+  const [downloads, setDownloads] = React.useState<DownloadItem[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
 
@@ -37,9 +54,9 @@ function DownloadQueue() {
         if (!resp.ok) throw new Error('Failed to fetch');
         const data = await resp.json();
         const list = Array.isArray(data.downloads) ? data.downloads : data;
-        setDownloads(list);
-      } catch (e: any) {
-        setError(e.message || 'Unknown error');
+        setDownloads(list as DownloadItem[]);
+      } catch (e) {
+        setError(e instanceof Error ? e.message : 'Unknown error');
       } finally {
         setLoading(false);
       }
@@ -64,7 +81,7 @@ function DownloadQueue() {
             </tr>
           </thead>
           <tbody>
-            {downloads.map((d: any) => (
+            {downloads.map((d: DownloadItem) => (
               <tr key={d.id} className="download-row" style={{background:'#f9f9f9', transition:'background 0.2s'}}>
                 <td>{d.id}</td>
                 <td><StatusBadge status={d.status} /></td>
@@ -80,7 +97,7 @@ function DownloadQueue() {
 }
 
 function ConfigSection() {
-  const [config, setConfig] = React.useState<any>(null);
+  const [config, setConfig] = React.useState<Config | null>(null);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
   const [saving, setSaving] = React.useState(false);
@@ -94,9 +111,9 @@ function ConfigSection() {
         const resp = await fetch('http://localhost:8080/config');
         if (!resp.ok) throw new Error('Failed to fetch');
         const data = await resp.json();
-        setConfig(data.config || data);
-      } catch (e: any) {
-        setError(e.message || 'Unknown error');
+        setConfig((data.config || data) as Config);
+      } catch (e) {
+        setError(e instanceof Error ? e.message : 'Unknown error');
       } finally {
         setLoading(false);
       }
@@ -117,8 +134,8 @@ function ConfigSection() {
       });
       if (!resp.ok) throw new Error('Failed to save');
       setSaveMsg('Saved!');
-    } catch (e: any) {
-      setError(e.message || 'Unknown error');
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Unknown error');
     } finally {
       setSaving(false);
       setTimeout(() => setSaveMsg(null), 1500);
@@ -126,7 +143,7 @@ function ConfigSection() {
   }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setConfig({ ...config, [e.target.name]: e.target.value });
+    setConfig({ ...config, [e.target.name]: e.target.value } as Config);
   }
 
   return (
@@ -181,8 +198,8 @@ function ManualDownloadSection() {
       if (!resp.ok) throw new Error('Failed to submit download request');
       setStatus('Download request sent!');
       setUrls('');
-    } catch (e: any) {
-      setError(e.message || 'Unknown error');
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Unknown error');
     } finally {
       setLoading(false);
       setTimeout(() => setStatus(null), 2000);
